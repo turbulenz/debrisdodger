@@ -176,6 +176,8 @@ Application.prototype =
         var delta = protolib.time.app.delta;
         var world = this.world;
         var mathDevice = protolib.getMathDevice();
+        var viewWidth = this.viewWidth;
+        var viewHeight = this.viewHeight;
 
         // Update code goes here
 
@@ -237,6 +239,8 @@ Application.prototype =
             }
             shipPosition[0] = protolib.utils.clamp(shipPosition[0], 1, 19);
             shipPosition[1] = protolib.utils.clamp(shipPosition[1], 1, 9);
+            shipPosition[0] = protolib.utils.clamp(shipPosition[0], 1, viewWidth - 1);
+            shipPosition[1] = protolib.utils.clamp(shipPosition[1], 1, viewHeight - 1);
             this.ship.rigidBody.setPosition(shipPosition);
 
             this.meshPosition[0] = (-shipPosition[0] * 0.1) + 1;
