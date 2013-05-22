@@ -1,0 +1,9 @@
+Ship Mesh
+=========
+
+Author: Little Killy
+Licensed: CC BY 3.0 - http://creativecommons.org/licenses/by/3.0/
+Source: http://opengameart.org/content/space-ship-3d2d
+Files:
+* models/ship.dae
+* textures/ship.png
