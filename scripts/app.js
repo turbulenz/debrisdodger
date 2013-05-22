@@ -137,14 +137,16 @@ Application.prototype =
         protolib.setCameraDirection(mathDevice.v3Build(0, 0, 1));
         protolib.setAmbientLightColor(mathDevice.v3Build(1, 1, 1));
 
-        function drawPhys2DDebugFn()
+        if (protolib.globals.config.enablePhysicsDebug)
         {
-            phys2DDebug.setScreenViewport(draw2D.getScreenSpaceViewport());
-            phys2DDebug.begin();
-            phys2DDebug.drawWorld(world);
-            phys2DDebug.end();
+            protolib.setPostDraw(function drawPhys2DDebugFn()
+            {
+                phys2DDebug.setScreenViewport(draw2D.getScreenSpaceViewport());
+                phys2DDebug.begin();
+                phys2DDebug.drawWorld(world);
+                phys2DDebug.end();
+            });
         }
-        protolib.setPostDraw(drawPhys2DDebugFn);
 
         function setRendererViewportFn()
         {
