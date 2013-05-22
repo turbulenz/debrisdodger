@@ -1,6 +1,8 @@
 Debris Dodger
 =============
 
+.. image:: https://raw.github.com/ianballantyne/debrisdodger/master/img/release_0.1.0_screenshot01.png
+
 +-------------+------------------+
 | Author      | Ian Ballantyne   |
 +-------------+------------------+
@@ -19,8 +21,8 @@ The game was written live in 40 minutes as a demonstration during the Turbulenz 
 The purpose is to demonstrate:
 
 - An simple application based structure for games.
-- An introduction to 2D Physics API and 3D mesh rendering.
-- The use of Protolib API as a prototyping library.
+- An introduction to `2D Physics API <http://docs.turbulenz.com/jslibrary_api/physics2ddevice_api.html>`__ and 3D mesh rendering.
+- The use of `Protolib API <http://docs.turbulenz.com/protolib/protolib_api.html>`__ as a prototyping library.
 - How to use the code and asset building system included with the turbulenz_engine repository.
 
 Requirements
@@ -116,7 +118,7 @@ Key:
 Changelog
 ---------
 
-**2013-05-21 - Initial Release**
+**2013-05-21 - Initial Release - 0.1.0**
 
 * The code demonstrated in the Turbulenz Livestream event.
 * Uses Protolib, prototyping library to render 2D/3D content together.
