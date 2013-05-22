@@ -20,6 +20,7 @@ Application.prototype =
         var mathDevice = protolib.getMathDevice();
         var graphicsDevice = protolib.getGraphicsDevice();
         var draw2D = protolib.globals.draw2D;
+        var inputDevice = protolib.getInputDevice();
 
         protolib.setClearColor(mathDevice.v3Build(0.3, 0.3, 0.3));
 
@@ -137,6 +138,58 @@ Application.prototype =
         protolib.setCameraDirection(mathDevice.v3Build(0, 0, 1));
         protolib.setAmbientLightColor(mathDevice.v3Build(1, 1, 1));
 
+        var that = this;
+        this.touchPositionX = 0;
+        this.touchPositionY = 0;
+        that.touchID = null;
+
+        this.touchPosition = [ship.position[0], ship.position[1]];
+        inputDevice.addEventListener('touchstart', function (touchEvent)
+        {
+            var changedTouches = touchEvent.changedTouches;
+            var touch;
+            for (var i = 0; i < changedTouches.length; i += 1)
+            {
+                touch = changedTouches[i];
+                if (that.touchID === null && touch.isGameTouch)
+                {
+                    that.touchID = touch.identifier;
+                    draw2D.viewportMap(touch.positionX, touch.positionY, that.touchPosition);
+                }
+            }
+        });
+        inputDevice.addEventListener('touchmove', function (touchEvent)
+        {
+            var changedTouches = touchEvent.changedTouches;
+            var touch;
+            for (var i = 0; i < changedTouches.length; i += 1)
+            {
+                touch = changedTouches[i];
+                if (that.touchID === touch.identifier)
+                {
+                    draw2D.viewportMap(touch.positionX, touch.positionY, that.touchPosition);
+                }
+            }
+        });
+
+        function touchStop(touchEvent)
+        {
+            var changedTouches = touchEvent.changedTouches;
+            var touch;
+            for (var i = 0; i < changedTouches.length; i += 1)
+            {
+                touch = changedTouches[i];
+                if (that.touchID === touch.identifier)
+                {
+                    that.touchID = null;
+                    that.touchPosition[0] = that.ship.position[0];
+                    that.touchPosition[1] = that.ship.position[1];
+                }
+            }
+        }
+        inputDevice.addEventListener('touchend', touchStop);
+        inputDevice.addEventListener('touchleave', touchStop);
+
         if (protolib.globals.config.enablePhysicsDebug)
         {
             protolib.setPostDraw(function drawPhys2DDebugFn()
@@ -220,25 +273,42 @@ Application.prototype =
             mathDevice.m43SetAxisRotation(this.meshRotationMatrix, this.yAxis, this.meshRotateY);
             this.mesh.setRotationMatrix(this.meshRotationMatrix);
 
-            var shipPosition = this.ship.rigidBody.getPosition();
+            var keySpeedX = 6;
+            var keySpeedY = 3;
+            var keyDown = false;
+
+            var shipPosition = this.ship.position;
+            this.ship.rigidBody.getPosition(shipPosition);
             if (protolib.isKeyDown(protolib.keyCodes.UP))
             {
-                shipPosition[1] -= delta * 3;
+                shipPosition[1] -= delta * keySpeedY;
+                keyDown = true;
             }
             if (protolib.isKeyDown(protolib.keyCodes.DOWN))
             {
-                shipPosition[1] += delta * 3;
+                shipPosition[1] += delta * keySpeedY;
+                keyDown = true;
             }
             if (protolib.isKeyDown(protolib.keyCodes.LEFT))
             {
-                shipPosition[0] -= delta * 6;
+                shipPosition[0] -= delta * keySpeedX;
+                keyDown = true;
             }
             if (protolib.isKeyDown(protolib.keyCodes.RIGHT))
             {
-                shipPosition[0] += delta * 6;
+                shipPosition[0] += delta * keySpeedX;
+                keyDown = true;
             }
-            shipPosition[0] = protolib.utils.clamp(shipPosition[0], 1, 19);
-            shipPosition[1] = protolib.utils.clamp(shipPosition[1], 1, 9);
+
+            var touchPosition = this.touchPosition;
+            if (keyDown)
+            {
+                touchPosition[0] = shipPosition[0];
+                touchPosition[1] = shipPosition[1];
+            }
+            shipPosition[0] += (touchPosition[0] - shipPosition[0]) * delta;
+            shipPosition[1] += (touchPosition[1] - shipPosition[1]) * delta;
+
             shipPosition[0] = protolib.utils.clamp(shipPosition[0], 1, viewWidth - 1);
             shipPosition[1] = protolib.utils.clamp(shipPosition[1], 1, viewHeight - 1);
             this.ship.rigidBody.setPosition(shipPosition);
