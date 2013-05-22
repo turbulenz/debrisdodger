@@ -9,6 +9,7 @@ var Config =
 {
     // Debug
     enableDynamicUI : true, // Enable the debug UI
+    enablePhysicsDebug: true, // Run with physics 2D debugging enabled
     // Audio
     disableSound : false // Turn off sound for the build
 };
