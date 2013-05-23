@@ -37,11 +37,15 @@ Requirements
 Build
 -----
 
-1) Git clone the `turbulenz_engine <https://github.com/turbulenz/turbulenz_engine>`__ Github repository.
+1) Git clone the `turbulenz_engine <https://github.com/turbulenz/turbulenz_engine>`__ Github repository::
+
+    git clone git://github.com/turbulenz/turbulenz_engine.git
 
 2) Install the `prerequisites <https://github.com/turbulenz/turbulenz_engine/blob/master/README.rst#pre-requisites>`__ and run the commands in the `README <https://github.com/turbulenz/turbulenz_engine/blob/master/README.rst#setup>`__ (Up to and including the 'apps' command).
 
-3) Git clone the Debris Dodger Github repository into the turbulenz_engine/apps/ directory.
+3) Git clone the Debris Dodger Github repository into the turbulenz_engine/apps directory::
+
+    git clone git://github.com/turbulenz/debrisdodger.git
 
    Note: If you want to clone to somewhere else, you need to change the TZROOT argument in the `Makefile <Makefile>`__.
 
@@ -49,11 +53,15 @@ Build
 
     python manage.py apps apps/debrisdodger
 
-5) Initialise and launch the `Turbulenz local server <https://github.com/turbulenz/turbulenz_local#installationsetup>`__
+5) Initialise and launch the `Turbulenz local server <https://github.com/turbulenz/turbulenz_local>`__, which is included with turbulenz_engine. With the Turbulenz environment activated in the turbulenz_engine root directory run the following commands to initialize and launch the local server::
+
+    local_server --init
+
+    local_server --launch
 
 6) Navigate to `127.0.0.1 <http://127.0.0.1:8070>`__ in Chrome/Firefox
 
-7) Add the project to the local server by clicking the '+' icon and specifying the game directory with an absolute path. Select the 'use' option.
+7) Add the project to the local server by clicking the '+' icon and specifying the game directory with an absolute path. Select the 'use' option. e.g. absolute/path/to/turbulenz_engine/apps/debrisdodger
 
 8) To run the game, click the 'Play' button and select:
 
@@ -76,6 +84,10 @@ Controls
 --------
 
 * Arrow keys (Up/Down/Left/Right) - Move the ship
+
+(NEW Feature!)
+
+* Touch - Touch an area for the ship to move towards.
 
 Editing
 -------
@@ -120,6 +132,10 @@ Key:
 
 Changelog
 ---------
+
+**2013-05-22 - Touch controls - 0.1.1**
+
+* Added touch controls as mentioned during talk.
 
 **2013-05-21 - Initial Release - 0.1.0**
 
