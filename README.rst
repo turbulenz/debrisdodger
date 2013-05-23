@@ -3,15 +3,17 @@ Debris Dodger
 
 .. image:: https://raw.github.com/ianballantyne/debrisdodger/master/img/release_0.1.0_screenshot01.png
 
-+-------------+------------------+
-| Author      | Ian Ballantyne   |
-+-------------+------------------+
-| Language    | JavaScript       |
-+-------------+------------------+
-| Technology  | Turbulenz Engine |
-+-------------+------------------+
-| Target      | HTML5/WebGL      |
-+-------------+------------------+
++-------------+---------------------------+
+| Author      | Ian Ballantyne            |
++-------------+---------------------------+
+| Game type   | 2D/3D Space Side Scroller |
++-------------+---------------------------+
+| Language    | JavaScript                |
++-------------+---------------------------+
+| Technology  | Turbulenz Engine          |
++-------------+---------------------------+
+| Target      | HTML5/WebGL               |
++-------------+---------------------------+
 
 Description
 -----------
@@ -37,7 +39,7 @@ Build
 
 1) Git clone the `turbulenz_engine <https://github.com/turbulenz/turbulenz_engine>`__ Github repository.
 
-2) Install the `prerequisites <https://github.com/turbulenz/turbulenz_engine/blob/master/README.rst#id7>`__ and run the commands in the `README <https://github.com/turbulenz/turbulenz_engine/blob/master/README.rst#id9>`__ (Up to and including the 'apps' command).
+2) Install the `prerequisites <https://github.com/turbulenz/turbulenz_engine/blob/master/README.rst#pre-requisites>`__ and run the commands in the `README <https://github.com/turbulenz/turbulenz_engine/blob/master/README.rst#setup>`__ (Up to and including the 'apps' command).
 
 3) Git clone the Debris Dodger Github repository into the turbulenz_engine/apps/ directory.
 
