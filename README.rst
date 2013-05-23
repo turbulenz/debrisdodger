@@ -18,6 +18,7 @@ Description
 
 Written as simple introduction to the Turbulenz HTML5 Game Engine.
 The game was written live in 40 minutes as a demonstration during the Turbulenz Livestream event: "`An Introduction to the Turbulenz Engine <https://new.livestream.com/turbulenz/turbulenz-engine-intro>`__".
+The video of the event can be found on `YouTube <http://www.youtube.com/watch?v=O5wgSe77k2I>`__
 The purpose is to demonstrate:
 
 - An simple application based structure for games.
