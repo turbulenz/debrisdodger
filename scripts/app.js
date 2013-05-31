@@ -17,6 +17,16 @@ Application.prototype =
     init: function initFn()
     {
         var protolib = this.protolib;
+        var version = protolib.version;
+        var requiredVersion = [0, 2];
+        if (version === undefined ||
+            version[0] !== requiredVersion[0] ||
+            version[1] !== requiredVersion[1])
+        {
+            protolib.utils.error("Protolib is not requiredVersion");
+            return false;
+        }
+
         var mathDevice = protolib.getMathDevice();
         var graphicsDevice = protolib.getGraphicsDevice();
         var draw2D = protolib.globals.draw2D;
@@ -221,6 +231,8 @@ Application.prototype =
         this.realTime = 0;
 
         this.white = mathDevice.v3Build(1, 1, 1);
+
+        return true;
     },
 
     update: function updateFn()
@@ -242,7 +254,6 @@ Application.prototype =
                     text: "Game Over!",
                     position: [protolib.width / 2, protolib.height / 2],
                     scale: 4,
-                    alignment: protolib.textAlignment.CENTER,
                     v3Color: this.white
                 });
                 protolib.endFrame();
@@ -255,7 +266,6 @@ Application.prototype =
                     text: "You survived!",
                     position: [protolib.width / 2, protolib.height / 2],
                     scale: 4,
-                    alignment: protolib.textAlignment.CENTER,
                     v3Color: this.white
                 });
                 protolib.endFrame();
@@ -356,7 +366,6 @@ Application.prototype =
                 text: "Health: " + Math.floor(this.ship.health) + ", Boxes: " + this.boxCount,
                 position: [protolib.width / 2, 20],
                 scale: 3,
-                alignment: protolib.textAlignment.CENTER,
                 v3Color: this.white
             });
 
@@ -367,6 +376,7 @@ Application.prototype =
             });
 
             this.setRendererViewport();
+
             protolib.endFrame();
         }
     },
@@ -397,6 +407,10 @@ Application.create = function applicationCreateFn(params)
         }
         return null;
     }
-    app.init();
+    if (!app.init())
+    {
+        app.protolib.utils.error("Protolib could not be initialized");
+        return null;
+    }
     return app;
 };
