@@ -82,7 +82,7 @@ Application.prototype =
             newBox = {
                 width: boxSize,
                 height: boxSize,
-                position: [ 20 + (i * 10) + Math.random() * 0.7, Math.random() * viewHeight ]
+                position: [20 + (i * 10) + Math.random() * 0.7, Math.random() * viewHeight]
             };
             newBox.shape = phys2D.createPolygonShape({
                 vertices: phys2D.createBoxVertices(newBox.width, newBox.height)
