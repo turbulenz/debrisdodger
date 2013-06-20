@@ -70,6 +70,13 @@ Application.prototype =
             position: box.position
         });
         world.addRigidBody(box.rigidBody);
+        box.sprite = {
+            texture: "textures/crate.jpg",
+            position: [box.position[0] - box.width / 2, box.position[1] - box.height / 2],
+            width: box.width,
+            height: box.height,
+            rotation: box.rigidBody.getRotation()
+        };
 
         var boxCount = this.boxCount = 30;
         var boxes = this.boxes = [];
@@ -328,17 +335,16 @@ Application.prototype =
             this.mesh.setPosition(this.meshPosition);
 
             var box = this.box;
+            var sprite = box.sprite;
             var boxRigidBody = box.rigidBody;
             if (boxRigidBody)
             {
                 boxRigidBody.getPosition(box.position);
-                protolib.draw2DSprite({
-                    texture: "textures/crate.jpg",
-                    position: [box.position[0] - box.width / 2, box.position[1] - box.height / 2],
-                    width: box.width,
-                    height: box.height,
-                    rotation: boxRigidBody.getRotation()
-                });
+                sprite.position[0] = box.position[0] - box.width / 2;
+                sprite.position[1] = box.position[1] - box.height / 2;
+                sprite.rotation = boxRigidBody.getRotation();
+
+                protolib.draw2DSprite(sprite);
             }
 
             var boxes = this.boxes;
