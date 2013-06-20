@@ -127,28 +127,59 @@ Application.prototype =
             ship.health -= shape.body.getInertia() * 10;
         });
 
-        this.meshPosition = mathDevice.v3Build(0, 0, 0);
-        this.mesh = protolib.loadMesh({
+        ship.meshPosition = mathDevice.v3Build(0, 0, 0);
+        ship.meshRotationMatrix = mathDevice.m43BuildIdentity();
+        ship.mesh = protolib.loadMesh({
             mesh: "models/ship.dae",
-            v3Position: this.meshPosition,
+            v3Position: ship.meshPosition,
             v3Size: mathDevice.v3Build(3, 3, 3)
         });
 
-        this.meshRotationMatrix = mathDevice.m43BuildIdentity();
-        this.meshRotateY = Math.PI * 2 - Math.PI / 2;
+        var debug = this.debug = {
+            meshRotateX: 0,
+            meshRotateY: Math.PI * 3 / 2,
+            meshRotateZ: 0
+        };
+        var pi2 = Math.PI * 2;
         protolib.addWatchVariable({
-            title: "Mesh Y Rotate",
-            object: this,
+            title: "Mesh Rotate X",
+            object: debug,
+            property: "meshRotateX",
+            group: "Debug",
+            type: protolib.watchTypes.SLIDER,
+            options: {
+                min: 0,
+                max: pi2,
+                step: pi2 / 360
+            }
+        });
+        this.xAxis = mathDevice.v3BuildXAxis();
+        protolib.addWatchVariable({
+            title: "Mesh Rotate Y",
+            object: debug,
             property: "meshRotateY",
             group: "Debug",
             type: protolib.watchTypes.SLIDER,
             options: {
                 min: 0,
-                max: Math.PI * 2,
-                step: Math.PI * 2 / 360
+                max: pi2,
+                step: pi2 / 360
             }
         });
         this.yAxis = mathDevice.v3BuildYAxis();
+        protolib.addWatchVariable({
+            title: "Mesh Rotate Z",
+            object: debug,
+            property: "meshRotateZ",
+            group: "Debug",
+            type: protolib.watchTypes.SLIDER,
+            options: {
+                min: 0,
+                max: pi2,
+                step: pi2 / 360
+            }
+        });
+        this.zAxis = mathDevice.v3BuildZAxis();
 
         protolib.setNearFarPlanes(0.1, 1000);
         protolib.setCameraPosition(mathDevice.v3Build(0, 0, -1));
@@ -287,8 +318,25 @@ Application.prototype =
 
             // Render code goes here
 
-            mathDevice.m43SetAxisRotation(this.meshRotationMatrix, this.yAxis, this.meshRotateY);
-            this.mesh.setRotationMatrix(this.meshRotationMatrix);
+            var meshRotationMatrix = this.ship.meshRotationMatrix;
+            var debug = this.debug;
+            var meshRotateX = debug.meshRotateX;
+            var meshRotateY = debug.meshRotateY;
+            var meshRotateZ = debug.meshRotateZ;
+
+            var tempRotationMatrix = mathDevice.m43BuildIdentity(this.tempRotationMatrix);
+            mathDevice.m43BuildIdentity(meshRotationMatrix);
+
+            mathDevice.m43SetAxisRotation(tempRotationMatrix, this.yAxis, meshRotateY);
+            mathDevice.m43Mul(meshRotationMatrix, tempRotationMatrix, meshRotationMatrix);
+
+            mathDevice.m43SetAxisRotation(tempRotationMatrix, this.zAxis, meshRotateZ);
+            mathDevice.m43Mul(meshRotationMatrix, tempRotationMatrix, meshRotationMatrix);
+
+            mathDevice.m43SetAxisRotation(tempRotationMatrix, this.xAxis, meshRotateX);
+            mathDevice.m43Mul(meshRotationMatrix, tempRotationMatrix, meshRotationMatrix);
+
+            this.ship.mesh.setRotationMatrix(meshRotationMatrix);
 
             var keySpeedX = 6;
             var keySpeedY = 3;
@@ -330,9 +378,10 @@ Application.prototype =
             shipPosition[1] = protolib.utils.clamp(shipPosition[1], 1, viewHeight - 1);
             this.ship.rigidBody.setPosition(shipPosition);
 
-            this.meshPosition[0] = (-shipPosition[0] * 0.1) + 1;
-            this.meshPosition[1] = (-shipPosition[1] * 0.15) + 0.8;
-            this.mesh.setPosition(this.meshPosition);
+            var meshPosition = this.ship.meshPosition;
+            meshPosition[0] = (-shipPosition[0] * 0.1) + 1;
+            meshPosition[1] = (-shipPosition[1] * 0.15) + 0.8;
+            this.ship.mesh.setPosition(meshPosition);
 
             var box = this.box;
             var sprite = box.sprite;
