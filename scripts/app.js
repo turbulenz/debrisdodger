@@ -111,6 +111,7 @@ Application.prototype =
             width: 3,
             height: 1.75,
             position: [ viewWidth / 2, viewHeight / 2],
+            velocity: [0, 0],
             health: 100
         };
         ship.shape = phys2D.createPolygonShape({
@@ -276,13 +277,9 @@ Application.prototype =
         var delta = protolib.time.app.delta;
         var world = this.world;
         var mathDevice = protolib.getMathDevice();
-        var viewWidth = this.viewWidth;
-        var viewHeight = this.viewHeight;
-
-        // Update code goes here
-
         if (protolib.beginFrame())
         {
+            // Update code goes here
             if (this.ship.health < 0)
             {
                 protolib.drawText({
@@ -308,12 +305,62 @@ Application.prototype =
             }
 
             this.realTime += delta;
+
+            var keySpeedX = 6;
+            var keySpeedY = 3;
+            var keyDown = false;
+
+            var shipPosition = this.ship.position;
+            var shipRigidBody = this.ship.rigidBody;
+            var shipVelocity = this.ship.velocity;
+            if (protolib.isKeyDown(protolib.keyCodes.UP))
+            {
+                shipVelocity[1] = -keySpeedY;
+                keyDown = true;
+            }
+            if (protolib.isKeyDown(protolib.keyCodes.DOWN))
+            {
+                shipVelocity[1] = keySpeedY;
+                keyDown = true;
+            }
+            if (protolib.isKeyDown(protolib.keyCodes.LEFT))
+            {
+                shipVelocity[0] = -keySpeedX;
+                keyDown = true;
+            }
+            if (protolib.isKeyDown(protolib.keyCodes.RIGHT))
+            {
+                shipVelocity[0] = keySpeedX;
+                keyDown = true;
+            }
+
+            var touchPosition = this.touchPosition;
+            if (!keyDown)
+            {
+                shipVelocity[0] = touchPosition[0] - shipPosition[0];
+                shipVelocity[1] = touchPosition[1] - shipPosition[1];
+            }
+            shipRigidBody.setVelocity(shipVelocity);
+
             while (world.simulatedTime < this.realTime)
             {
                 world.step(1 / 60);
             }
 
-            // Render code goes here
+            shipRigidBody.getPosition(shipPosition);
+            shipPosition[0] = protolib.utils.clamp(shipPosition[0], 1, this.viewWidth - 1);
+            shipPosition[1] = protolib.utils.clamp(shipPosition[1], 1, this.viewHeight - 1);
+            shipRigidBody.setPosition(shipPosition);
+            if (keyDown)
+            {
+                touchPosition[0] = shipPosition[0];
+                touchPosition[1] = shipPosition[1];
+            }
+
+            var meshPosition = this.ship.meshPosition;
+            meshPosition[0] = (-shipPosition[0] * 0.1) + 1;
+            meshPosition[1] = (-shipPosition[1] * 0.15) + 0.8;
+            this.ship.mesh.setPosition(meshPosition);
 
             var meshRotationMatrix = this.ship.meshRotationMatrix;
             var debug = this.debug;
@@ -335,51 +382,7 @@ Application.prototype =
 
             this.ship.mesh.setRotationMatrix(meshRotationMatrix);
 
-            var keySpeedX = 6;
-            var keySpeedY = 3;
-            var keyDown = false;
-
-            var shipPosition = this.ship.position;
-            this.ship.rigidBody.getPosition(shipPosition);
-            if (protolib.isKeyDown(protolib.keyCodes.UP))
-            {
-                shipPosition[1] -= delta * keySpeedY;
-                keyDown = true;
-            }
-            if (protolib.isKeyDown(protolib.keyCodes.DOWN))
-            {
-                shipPosition[1] += delta * keySpeedY;
-                keyDown = true;
-            }
-            if (protolib.isKeyDown(protolib.keyCodes.LEFT))
-            {
-                shipPosition[0] -= delta * keySpeedX;
-                keyDown = true;
-            }
-            if (protolib.isKeyDown(protolib.keyCodes.RIGHT))
-            {
-                shipPosition[0] += delta * keySpeedX;
-                keyDown = true;
-            }
-
-            var touchPosition = this.touchPosition;
-            if (keyDown)
-            {
-                touchPosition[0] = shipPosition[0];
-                touchPosition[1] = shipPosition[1];
-            }
-            shipPosition[0] += (touchPosition[0] - shipPosition[0]) * delta;
-            shipPosition[1] += (touchPosition[1] - shipPosition[1]) * delta;
-
-            shipPosition[0] = protolib.utils.clamp(shipPosition[0], 1, viewWidth - 1);
-            shipPosition[1] = protolib.utils.clamp(shipPosition[1], 1, viewHeight - 1);
-            this.ship.rigidBody.setPosition(shipPosition);
-
-            var meshPosition = this.ship.meshPosition;
-            meshPosition[0] = (-shipPosition[0] * 0.1) + 1;
-            meshPosition[1] = (-shipPosition[1] * 0.15) + 0.8;
-            this.ship.mesh.setPosition(meshPosition);
-
+            // Render code goes here
             var box = this.box;
             var sprite = box.sprite;
             var boxRigidBody = box.rigidBody;
