@@ -18,10 +18,11 @@ Application.prototype =
     {
         var protolib = this.protolib;
         var version = protolib.version;
-        var requiredVersion = [0, 2];
+        var requiredVersion = [0, 2, 1];
         if (version === undefined ||
             version[0] !== requiredVersion[0] ||
-            version[1] !== requiredVersion[1])
+            version[1] !== requiredVersion[1] ||
+            version[2] !== requiredVersion[2])
         {
             protolib.utils.error("Protolib is not requiredVersion");
             return false;
@@ -238,33 +239,29 @@ Application.prototype =
         inputDevice.addEventListener('touchend', touchStop);
         inputDevice.addEventListener('touchleave', touchStop);
 
-        if (protolib.globals.config.enablePhysicsDebug)
-        {
-            protolib.setPostDraw(function drawPhys2DDebugFn()
-            {
-                phys2DDebug.setScreenViewport(draw2D.getScreenSpaceViewport());
-                phys2DDebug.begin();
-                phys2DDebug.drawWorld(world);
-                phys2DDebug.end();
-            });
-        }
-
-        function setRendererViewportFn()
-        {
+        protolib.setPreDraw(function preDrawFn() {
             var x = draw2D.scissorX;
             var y = draw2D.scissorY;
             var width = draw2D.scissorWidth;
             var height = draw2D.scissorHeight;
             graphicsDevice.setViewport(x, y, width, height);
             graphicsDevice.setScissor(x, y, width, height);
-        }
-        this.setRendererViewport = setRendererViewportFn;
+        });
 
-        function setSpriteViewportFn()
-        {
+        protolib.setPostRendererDraw(function postRendererDrawFn() {
             graphicsDevice.setViewport(0, 0, protolib.width, protolib.height);
-        }
-        protolib.setPostRendererDraw(setSpriteViewportFn);
+            graphicsDevice.setScissor(0, 0, protolib.width, protolib.height);
+        });
+
+        protolib.setPostDraw(function postDrawFn() {
+            if (protolib.globals.config.enablePhysicsDebug)
+            {
+                phys2DDebug.setScreenViewport(draw2D.getScreenSpaceViewport());
+                phys2DDebug.begin();
+                phys2DDebug.drawWorld(world);
+                phys2DDebug.end();
+            }
+        });
 
         this.realTime = 0;
 
@@ -429,8 +426,6 @@ Application.prototype =
                 v3Position: mathDevice.v3Build(0, 0, 1),
                 size: 2
             });
-
-            this.setRendererViewport();
 
             protolib.endFrame();
         }
