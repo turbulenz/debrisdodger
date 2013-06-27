@@ -30,8 +30,8 @@ Application.prototype =
 
         var mathDevice = protolib.getMathDevice();
         var graphicsDevice = protolib.getGraphicsDevice();
-        var draw2D = protolib.globals.draw2D;
         var inputDevice = protolib.getInputDevice();
+        var draw2D = protolib.globals.draw2D;
 
         protolib.setClearColor(mathDevice.v3Build(0.3, 0.3, 0.3));
 
