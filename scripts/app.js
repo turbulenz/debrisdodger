@@ -104,6 +104,13 @@ Application.prototype =
                 rotation: Math.PI * 2 * Math.random()
             });
             world.addRigidBody(newBox.rigidBody);
+            newBox.sprite = {
+                texture: "textures/crate.jpg",
+                position: [newBox.position[0] - newBox.width / 2, newBox.position[1] - newBox.height / 2],
+                width: newBox.width,
+                height: newBox.height,
+                rotation: newBox.rigidBody.getRotation()
+            };
             boxes[i] = newBox;
         }
 
@@ -397,18 +404,21 @@ Application.prototype =
             }
 
             var boxes = this.boxes;
-            for (var i = 0; i < boxes.length; i += 1)
+            var boxesLength = boxes.length;
+            for (var i = 0; i < boxesLength; i += 1)
             {
                 box = boxes[i];
                 boxRigidBody = box.rigidBody;
-                boxRigidBody.getPosition(box.position);
-                protolib.draw2DSprite({
-                    texture: "textures/crate.jpg",
-                    position: [box.position[0] - box.width / 2, box.position[1] - box.height / 2],
-                    width: box.width,
-                    height: box.height,
-                    rotation: boxRigidBody.getRotation()
-                });
+                if (boxRigidBody)
+                {
+                    sprite = box.sprite;
+                    boxRigidBody.getPosition(box.position);
+                    sprite.position[0] = box.position[0] - box.width / 2;
+                    sprite.position[1] = box.position[1] - box.height / 2;
+                    sprite.rotation = boxRigidBody.getRotation();
+
+                    protolib.draw2DSprite(sprite);
+                }
 
                 if (!box.avoided && box.position[0] < -5)
                 {
