@@ -118,7 +118,6 @@ Application.prototype =
             width: 3,
             height: 1.75,
             position: [ viewWidth / 2, viewHeight / 2],
-            velocity: [0, 0],
             health: 100
         };
         ship.shape = phys2D.createPolygonShape({
@@ -130,6 +129,60 @@ Application.prototype =
             position: ship.position
         });
         world.addRigidBody(ship.rigidBody);
+
+        ship.velocity = [0, 0];
+
+        var that = this;
+        this.touchPositionX = 0;
+        this.touchPositionY = 0;
+        that.touchID = null;
+
+        this.touchPosition = [ship.position[0], ship.position[1]];
+        inputDevice.addEventListener('touchstart', function (touchEvent)
+        {
+            var changedTouches = touchEvent.changedTouches;
+            var touch;
+            for (var i = 0; i < changedTouches.length; i += 1)
+            {
+                touch = changedTouches[i];
+                if (that.touchID === null && touch.isGameTouch)
+                {
+                    that.touchID = touch.identifier;
+                    draw2D.viewportMap(touch.positionX, touch.positionY, that.touchPosition);
+                }
+            }
+        });
+        inputDevice.addEventListener('touchmove', function (touchEvent)
+        {
+            var changedTouches = touchEvent.changedTouches;
+            var touch;
+            for (var i = 0; i < changedTouches.length; i += 1)
+            {
+                touch = changedTouches[i];
+                if (that.touchID === touch.identifier)
+                {
+                    draw2D.viewportMap(touch.positionX, touch.positionY, that.touchPosition);
+                }
+            }
+        });
+
+        function touchStop(touchEvent)
+        {
+            var changedTouches = touchEvent.changedTouches;
+            var touch;
+            for (var i = 0; i < changedTouches.length; i += 1)
+            {
+                touch = changedTouches[i];
+                if (that.touchID === touch.identifier)
+                {
+                    that.touchID = null;
+                    that.touchPosition[0] = that.ship.position[0];
+                    that.touchPosition[1] = that.ship.position[1];
+                }
+            }
+        }
+        inputDevice.addEventListener('touchend', touchStop);
+        inputDevice.addEventListener('touchleave', touchStop);
 
         ship.shape.addEventListener('begin', function (arbiter, shape)
         {
@@ -194,58 +247,6 @@ Application.prototype =
         protolib.setCameraPosition(mathDevice.v3Build(0, 0, -1));
         protolib.setCameraDirection(mathDevice.v3Build(0, 0, 1));
         protolib.setAmbientLightColor(mathDevice.v3Build(1, 1, 1));
-
-        var that = this;
-        this.touchPositionX = 0;
-        this.touchPositionY = 0;
-        that.touchID = null;
-
-        this.touchPosition = [ship.position[0], ship.position[1]];
-        inputDevice.addEventListener('touchstart', function (touchEvent)
-        {
-            var changedTouches = touchEvent.changedTouches;
-            var touch;
-            for (var i = 0; i < changedTouches.length; i += 1)
-            {
-                touch = changedTouches[i];
-                if (that.touchID === null && touch.isGameTouch)
-                {
-                    that.touchID = touch.identifier;
-                    draw2D.viewportMap(touch.positionX, touch.positionY, that.touchPosition);
-                }
-            }
-        });
-        inputDevice.addEventListener('touchmove', function (touchEvent)
-        {
-            var changedTouches = touchEvent.changedTouches;
-            var touch;
-            for (var i = 0; i < changedTouches.length; i += 1)
-            {
-                touch = changedTouches[i];
-                if (that.touchID === touch.identifier)
-                {
-                    draw2D.viewportMap(touch.positionX, touch.positionY, that.touchPosition);
-                }
-            }
-        });
-
-        function touchStop(touchEvent)
-        {
-            var changedTouches = touchEvent.changedTouches;
-            var touch;
-            for (var i = 0; i < changedTouches.length; i += 1)
-            {
-                touch = changedTouches[i];
-                if (that.touchID === touch.identifier)
-                {
-                    that.touchID = null;
-                    that.touchPosition[0] = that.ship.position[0];
-                    that.touchPosition[1] = that.ship.position[1];
-                }
-            }
-        }
-        inputDevice.addEventListener('touchend', touchStop);
-        inputDevice.addEventListener('touchleave', touchStop);
 
         protolib.setPreDraw(function preDrawFn() {
             var x = draw2D.scissorX;
