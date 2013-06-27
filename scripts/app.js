@@ -425,6 +425,9 @@ Application.prototype =
                 {
                     this.boxCount -= 1;
                     box.avoided = true;
+
+                    this.world.removeRigidBody(boxRigidBody);
+                    box.rigidBody = null;
                 }
             }
 
