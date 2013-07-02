@@ -117,8 +117,7 @@ Application.prototype =
         var ship = this.ship = {
             width: 3,
             height: 1.75,
-            position: [ viewWidth / 2, viewHeight / 2],
-            health: 100
+            position: [ viewWidth / 2, viewHeight / 2]
         };
         ship.shape = phys2D.createPolygonShape({
             vertices: [[ship.width / 2, 0], [-ship.width / 2, ship.height / 2], [-ship.width / 2, -ship.height / 2], [ship.width / 2, 0]]
@@ -184,17 +183,18 @@ Application.prototype =
         inputDevice.addEventListener('touchend', touchStop);
         inputDevice.addEventListener('touchleave', touchStop);
 
-        ship.shape.addEventListener('begin', function (arbiter, shape)
-        {
-            ship.health -= shape.body.getInertia() * 10;
-        });
-
         ship.meshPosition = mathDevice.v3Build(0, 0, 0);
         ship.meshRotationMatrix = mathDevice.m43BuildIdentity();
         ship.mesh = protolib.loadMesh({
             mesh: "models/ship.dae",
             v3Position: ship.meshPosition,
             v3Size: mathDevice.v3Build(3, 3, 3)
+        });
+
+        ship.health = 100;
+        ship.shape.addEventListener('begin', function (arbiter, shape)
+        {
+            ship.health -= shape.body.getInertia() * 10;
         });
 
         var debug = this.debug = {
