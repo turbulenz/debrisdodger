@@ -275,6 +275,26 @@ Application.prototype =
         this.realTime = 0;
 
         this.white = mathDevice.v3Build(1, 1, 1);
+        this.hudText = {
+            text: "Health: " + Math.floor(ship.health) + ", Boxes: " + boxCount,
+            position: [protolib.width / 2, 20],
+            scale: 3,
+            v3Color: this.white
+        };
+
+        this.gameOverText = {
+            text: "Game Over!",
+            position: [protolib.width / 2, protolib.height / 2],
+            scale: 4,
+            v3Color: this.white
+        };
+
+        this.survivedText = {
+            text: "You survived!",
+            position: [protolib.width / 2, protolib.height / 2],
+            scale: 4,
+            v3Color: this.white
+        };
 
         return true;
     },
@@ -288,26 +308,21 @@ Application.prototype =
         if (protolib.beginFrame())
         {
             // Update code goes here
+            var text = null;
             if (this.ship.health < 0)
             {
-                protolib.drawText({
-                    text: "Game Over!",
-                    position: [protolib.width / 2, protolib.height / 2],
-                    scale: 4,
-                    v3Color: this.white
-                });
-                protolib.endFrame();
-                return;
+                text = this.gameOverText;
+            } else if (this.boxCount <= 0)
+            {
+                text = this.survivedText;
             }
 
-            if (this.boxCount <= 0)
+            if (text)
             {
-                protolib.drawText({
-                    text: "You survived!",
-                    position: [protolib.width / 2, protolib.height / 2],
-                    scale: 4,
-                    v3Color: this.white
-                });
+                this.ship.mesh.setEnabled(false);
+                text.position[0] = protolib.width / 2;
+                text.position[1] = protolib.height / 2;
+                protolib.drawText(text);
                 protolib.endFrame();
                 return;
             }
@@ -426,17 +441,14 @@ Application.prototype =
                     this.boxCount -= 1;
                     box.avoided = true;
 
-                    this.world.removeRigidBody(boxRigidBody);
+                    world.removeRigidBody(boxRigidBody);
                     box.rigidBody = null;
                 }
             }
 
-            protolib.drawText({
-                text: "Health: " + Math.floor(this.ship.health) + ", Boxes: " + this.boxCount,
-                position: [protolib.width / 2, 20],
-                scale: 3,
-                v3Color: this.white
-            });
+            this.hudText.text = "Health: " + Math.floor(this.ship.health) + ", Boxes: " + this.boxCount;
+            this.hudText.position[0] = protolib.width / 2;
+            protolib.drawText(this.hudText);
 
             protolib.draw3DSprite({
                 texture: "textures/nightsky_gradient.png",
