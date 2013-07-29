@@ -248,6 +248,14 @@ Application.prototype =
         protolib.setCameraDirection(mathDevice.v3Build(0, 0, 1));
         protolib.setAmbientLightColor(mathDevice.v3Build(1, 1, 1));
 
+        var viewport = this.viewport = {
+            top: 0,
+            bottom: protolib.height,
+            left: 0,
+            right: protolib.width,
+            width: protolib.width,
+            height: protolib.height
+        };
         protolib.setPreDraw(function preDrawFn() {
             var x = draw2D.scissorX;
             var y = draw2D.scissorY;
@@ -255,6 +263,12 @@ Application.prototype =
             var height = draw2D.scissorHeight;
             graphicsDevice.setViewport(x, y, width, height);
             graphicsDevice.setScissor(x, y, width, height);
+            viewport.top = y;
+            viewport.bottom = y + height;
+            viewport.left = x;
+            viewport.right = x + width;
+            viewport.width = width;
+            viewport.height = height;
         });
 
         protolib.setPostRendererDraw(function postRendererDrawFn() {
@@ -275,24 +289,28 @@ Application.prototype =
         this.realTime = 0;
 
         this.white = mathDevice.v3Build(1, 1, 1);
+        var baseTextSize = this.baseTextSize = 5;
+        var baseHeight = this.baseHeight = 720;
+        var textScaleFactor = this.textScaleFactor = baseTextSize * (baseHeight / viewport.height);
         this.hudText = {
             text: "Health: " + Math.floor(ship.health) + ", Boxes: " + boxCount,
-            position: [protolib.width / 2, 20],
-            scale: 3,
-            v3Color: this.white
+            position: [protolib.width / 2, viewport.top],
+            scale: textScaleFactor,
+            v3Color: this.white,
+            verticalAlign: protolib.textVerticalAlign.TOP
         };
 
         this.gameOverText = {
             text: "Game Over!",
             position: [protolib.width / 2, protolib.height / 2],
-            scale: 4,
+            scale: textScaleFactor * 1.5,
             v3Color: this.white
         };
 
         this.survivedText = {
             text: "You survived!",
             position: [protolib.width / 2, protolib.height / 2],
-            scale: 4,
+            scale: textScaleFactor * 1.5,
             v3Color: this.white
         };
 
@@ -305,6 +323,7 @@ Application.prototype =
         var delta = protolib.time.app.delta;
         var world = this.world;
         var mathDevice = protolib.getMathDevice();
+        var textScaleFactor = this.baseTextSize * (this.viewport.height / this.baseHeight);
         if (protolib.beginFrame())
         {
             // Update code goes here
@@ -322,6 +341,7 @@ Application.prototype =
                 this.ship.mesh.setEnabled(false);
                 text.position[0] = protolib.width / 2;
                 text.position[1] = protolib.height / 2;
+                text.scale = textScaleFactor * 1.5;
                 protolib.drawText(text);
                 protolib.endFrame();
                 return;
@@ -447,7 +467,10 @@ Application.prototype =
             }
 
             this.hudText.text = "Health: " + Math.floor(this.ship.health) + ", Boxes: " + this.boxCount;
-            this.hudText.position[0] = protolib.width / 2;
+            var textPosition = this.hudText.position;
+            textPosition[0] = protolib.width / 2;
+            textPosition[1] = this.viewport.top;
+            this.hudText.scale = textScaleFactor;
             protolib.drawText(this.hudText);
 
             protolib.draw3DSprite({
