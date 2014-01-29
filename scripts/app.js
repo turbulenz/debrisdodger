@@ -277,9 +277,9 @@ Application.prototype =
         });
 
         protolib.setPostDraw(function postDrawFn() {
+            phys2DDebug.setScreenViewport(draw2D.getScreenSpaceViewport());
             if (protolib.globals.config.enablePhysicsDebug)
             {
-                phys2DDebug.setScreenViewport(draw2D.getScreenSpaceViewport());
                 phys2DDebug.begin();
                 phys2DDebug.drawWorld(world);
                 phys2DDebug.end();
