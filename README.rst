@@ -133,6 +133,18 @@ Key:
 Changelog
 ---------
 
+**2014-03-07 - Tutorial Improvements - 0.2.0**
+
+* Updated to be a clearer example as a tutorial
+* Cached sprites to be more efficient with memory
+* Mesh position added to the ship
+* Updated protolib to 0.2.1, required for pre/post renderer and draw behavior
+* Velocity used for 2D physics as a better example
+* Remove rigid bodies that have gone off screen
+* Various style and layout improvements
+* Corrected text rendering and scaling at end of game
+* Compatible with SDK 0.28.0
+
 **2013-05-22 - Touch controls - 0.1.1**
 
 * Added touch controls as mentioned during talk.
