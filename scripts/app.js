@@ -39,15 +39,16 @@ Application.prototype =
 
         var viewWidth = this.viewWidth = 20;
         var viewHeight = this.viewHeight = 10;
+        var viewportRectangle = [0, 0, viewWidth, viewHeight];
 
         var phys2D = this.phys2D = Physics2DDevice.create();
         var phys2DDebug = this.phys2DDebug = Physics2DDebugDraw.create({
             graphicsDevice: graphicsDevice
         });
 
-        phys2DDebug.setPhysics2DViewport([0, 0, viewWidth, viewHeight]);
+        phys2DDebug.setPhysics2DViewport(viewportRectangle);
         draw2D.configure({
-            viewportRectangle: [0, 0, viewWidth, viewHeight],
+            viewportRectangle: viewportRectangle,
             scaleMode: 'scale'
         });
 
@@ -120,7 +121,10 @@ Application.prototype =
             position: [ viewWidth / 2, viewHeight / 2]
         };
         ship.shape = phys2D.createPolygonShape({
-            vertices: [[ship.width / 2, 0], [-ship.width / 2, ship.height / 2], [-ship.width / 2, -ship.height / 2], [ship.width / 2, 0]]
+            vertices: [ [ship.width / 2, 0],
+                        [-ship.width / 2, ship.height / 2],
+                        [-ship.width / 2, -ship.height / 2],
+                        [ship.width / 2, 0] ]
         });
         ship.rigidBody = phys2D.createRigidBody({
             type: 'kinematic',
@@ -411,7 +415,7 @@ Application.prototype =
             var meshRotateY = debug.meshRotateY;
             var meshRotateZ = debug.meshRotateZ;
 
-            var tempRotationMatrix = mathDevice.m43BuildIdentity(this.tempRotationMatrix);
+            var tempRotationMatrix = this.tempRotationMatrix = mathDevice.m43BuildIdentity(this.tempRotationMatrix);
             mathDevice.m43BuildIdentity(meshRotationMatrix);
 
             mathDevice.m43SetAxisRotation(tempRotationMatrix, this.yAxis, meshRotateY);
