@@ -85,7 +85,7 @@ Application.prototype =
         var boxSize;
         var newBox;
 
-        for (var i = 0; i < boxCount; i += 1)
+        for (var i = 0; i < boxCount - 1; i += 1)
         {
             boxSize = 0.5 + Math.random() * 0.7;
             newBox = {
@@ -329,6 +329,7 @@ Application.prototype =
         var mathDevice = protolib.getMathDevice();
         var delta = protolib.time.app.delta;
         var world = this.world;
+
         if (protolib.beginFrame())
         {
             // Update code goes here
@@ -444,6 +445,15 @@ Application.prototype =
                 sprite.rotation = boxRigidBody.getRotation();
 
                 protolib.draw2DSprite(sprite);
+            }
+
+            if (!box.avoided && box.position[0] < -5)
+            {
+                this.boxCount -= 1;
+                box.avoided = true;
+
+                world.removeRigidBody(boxRigidBody);
+                box.rigidBody = null;
             }
 
             var boxes = this.boxes;
