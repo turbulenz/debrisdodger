@@ -323,6 +323,52 @@ Application.prototype =
         return true;
     },
 
+    reset: function resetFn()
+    {
+        var phys2D = this.phys2D;
+        var boxList = this.boxes;
+        var boxRigidBody, box;
+        var world = this.world;
+        boxList.push(this.box);
+        var boxListLength = this.boxCount = boxList.length;
+        for (var i = 0; i < boxListLength; i += 1)
+        {
+            box = boxList[i];
+            box.avoided = false;
+            boxRigidBody = box.rigidBody;
+            if (boxRigidBody)
+            {
+                world.removeRigidBody(boxRigidBody);
+            }
+            box.position = [20 + (i * 10) + Math.random() * 7, Math.random() * this.viewHeight];
+            boxRigidBody = phys2D.createRigidBody({
+                type: 'dynamic',
+                shapes: [box.shape],
+                position: box.position,
+                rotation: Math.PI * 2 * Math.random()
+            });
+            world.addRigidBody(boxRigidBody);
+            box.rigidBody = boxRigidBody;
+        }
+        boxList.length = boxList.length - 1;
+
+        var ship = this.ship;
+        ship.mesh.setEnabled(true);
+        ship.velocity[0] = 0;
+        ship.velocity[1] = 0;
+        ship.position[0] = this.touchPosition[0] = this.viewWidth / 2;
+        ship.position[1] = this.touchPosition[1] = this.viewHeight / 2;
+        world.removeRigidBody(ship.rigidBody);
+        ship.rigidBody = phys2D.createRigidBody({
+            type: 'kinematic',
+            shapes: [ship.shape],
+            position: ship.position
+        });
+        world.addRigidBody(ship.rigidBody);
+
+        ship.health = 100;
+    },
+
     update: function updateFn()
     {
         var protolib = this.protolib;
@@ -333,6 +379,13 @@ Application.prototype =
         if (protolib.beginFrame())
         {
             // Update code goes here
+            if (protolib.isKeyJustDown(protolib.keyCodes.RETURN))
+            {
+                this.reset();
+                protolib.endFrame();
+                return;
+
+            }
             var textScaleFactor = this.baseTextSize * (this.viewport.height / this.baseHeight);
             var text = null;
             if (this.ship.health < 0)
@@ -345,6 +398,13 @@ Application.prototype =
 
             if (text)
             {
+                if (this.lastTouchCount !== this.touchCount)
+                {
+                    this.reset();
+                    protolib.endFrame();
+                    return;
+                }
+
                 this.ship.mesh.setEnabled(false);
                 text.position[0] = protolib.width / 2;
                 text.position[1] = protolib.height / 2;
