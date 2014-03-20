@@ -139,6 +139,7 @@ Application.prototype =
         this.touchPositionX = 0;
         this.touchPositionY = 0;
         that.touchID = null;
+        that.touchCount = 0;
 
         this.touchPosition = [ship.position[0], ship.position[1]];
         inputDevice.addEventListener('touchstart', function (touchEvent)
@@ -152,6 +153,7 @@ Application.prototype =
                 {
                     that.touchID = touch.identifier;
                     draw2D.viewportMap(touch.positionX, touch.positionY, that.touchPosition);
+                    that.touchCount += 1;
                 }
             }
         });
@@ -388,6 +390,7 @@ Application.prototype =
                 shipVelocity[1] = touchPosition[1] - shipPosition[1];
             }
             shipRigidBody.setVelocity(shipVelocity);
+            this.lastTouchCount = this.touchCount;
 
             while (world.simulatedTime < this.realTime)
             {
