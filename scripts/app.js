@@ -35,7 +35,7 @@ Application.prototype =
 
         protolib.setClearColor(mathDevice.v3Build(0.3, 0.3, 0.3));
 
-        // Intialization code goes here
+        // Initialization code goes here
 
         var viewWidth = this.viewWidth = 20;
         var viewHeight = this.viewHeight = 10;
