@@ -1,4 +1,4 @@
-// Copyright (c) 2013 Turbulenz Limited
+// Copyright (c) 2014 Turbulenz Limited
 /* global Protolib: false*/
 /* global Config: false*/
 /* global Physics2DDevice: false*/
@@ -324,13 +324,13 @@ Application.prototype =
     update: function updateFn()
     {
         var protolib = this.protolib;
+        var mathDevice = protolib.getMathDevice();
         var delta = protolib.time.app.delta;
         var world = this.world;
-        var mathDevice = protolib.getMathDevice();
-        var textScaleFactor = this.baseTextSize * (this.viewport.height / this.baseHeight);
         if (protolib.beginFrame())
         {
             // Update code goes here
+            var textScaleFactor = this.baseTextSize * (this.viewport.height / this.baseHeight);
             var text = null;
             if (this.ship.health < 0)
             {
